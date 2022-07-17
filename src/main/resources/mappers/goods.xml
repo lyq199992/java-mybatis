@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="goods">
+    <resultMap id="customMap" type="com.lyq.mybatis.entity.Goods">
+        <id column="id" property="goodsId" />
+        <!--非主键列 用 result 标签-->
+        <result column="goods_name" property="goodsName"/>
+    </resultMap>
+     <!-- id 代表 sql 名称， resultType 代表返回数据类型-->
+    <select id="selectAll" resultMap="customMap">
+        select * from goods;
+    </select>
+
+    <!-- 如果需要传递单参数 -->
+    <select id="selectId" resultType="com.lyq.mybatis.entity.Goods" parameterType="Integer">
+        select * from goods where goods_id = #{value};
+    </select>
+    <!-- 如果需要传递多参数 -->
+    <select id="selectByPriceRange" resultType="com.lyq.mybatis.entity.Goods" parameterType="java.util.Map" >
+        select * from goods
+        where goods_id between #{min} and #{max}
+    </select>
+    <!-- 多表查询 ， 会将每一条查询出来的结果包装程 Map 对象-->
+    <!-- LinkedHashMap 不会乱序， Map 会乱序-->
+    <select id="selectGoodsMap" resultType="java.util.LinkedHashMap" parameterType="java.util.Map" >
+        select c.category_id,g.* from goods g, category c
+        where c.category_id = g.category_id
+    </select>
+
+    <!-- type 映射对象-->
+    <resultMap id="rmGoods" type="com.lyq.mybatis.dto.GoodsDto">
+        <!-- id 代表主键 ， property 和 column 必填-->
+        <id property="goods.goodsId" column="goods_id"></id>
+        <!-- result 代表其他 -->
+        <result property="goods.goodsName" column="goods_name"></result>
+        <result property="categoryName" column="category_name"/>
+    </resultMap>
+    <select id="selectGoodsDTO" resultMap="rmGoods">
+        select c.category_name,g.* from goods g, category c
+        where c.category_id = g.category_id
+    </select>
+
+    <!-- 传入 Goods 对象 -->
+    <insert id="insertGoods" parameterType="com.lyq.mybatis.entity.Goods">
+        insert into goods(goods_name, category_id) values (#{goodsName}, #{categoryId})
+        <selectKey resultType="Integer" keyProperty="goodsId" order="AFTER">
+           select last_insert_id()
+            <!-- 用来获取insert过后，获取新产生的编号 -->
+        </selectKey>
+    </insert>
+
+    <update id="updateGoods" parameterType="com.lyq.mybatis.entity.Goods">
+        update goods
+        set goods_name = #{goodsName}
+        where goods_id = #{goodsId}
+    </update>
+
+    <delete id="deleteGoods" parameterType="Integer">
+        delete from goods where goods_id = #{goodsId}
+    </delete>
+
+    <select id="dynamicSQL" parameterType="java.util.Map" resultType="com.lyq.mybatis.entity.Category">
+        select * from category
+        <where>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="categoryName != null">
+                and category_name = #{categoryName}
+            </if>
+        </where>
+    </select>
+</mapper>

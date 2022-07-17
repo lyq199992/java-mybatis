@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+    <select id="selectOne" resultType="com.lyq.mybatis.entity.Users" parameterType="Integer">
+            select * from users where user_id = #{value};
+    </select>
+    <!--<select id="selectId" resultType="com.lyq.mybatis.entity.Goods" parameterType="Integer">-->
+        <!--select * from goods where goods_id = #{value};-->
+    <!--</select>-->
+    <select id="selectAll"/>
+</mapper>

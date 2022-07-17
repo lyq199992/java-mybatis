@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 10:48:50.618 [main] DEBUG o.a.i.d.pooled.PooledDataSource - PooledDataSource forcefully closed/removed all connections. -->
+            <!--thread 线程名词， %d{HH:mm:ss.SSS} 控制台输出时间-->
+            <!-- %-5level 日志级别 -->
+            <!-- %logger{36} 那个类产生的日志 -->
+            <!-- %n 代表换行  %msg 内容 -->
+            <pattern> %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!--
+        日志输出级别（优先级从高到低）
+        error：错误 - 系统故障日志
+        warn：警告 - 存在风险或使用不当的日志
+        info：一般性消息
+        debug：程序调试信息
+        trace：程序运行跟踪信息
+    -->
+    <root level="debug">
+        <appender-ref ref="console"/>
+    </root>
+</configuration>
